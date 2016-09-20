@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mikk150\\phonevalidator\\": ""
+            "mikk150\\phonevalidator\\": "src/"
         }
     }
 }
