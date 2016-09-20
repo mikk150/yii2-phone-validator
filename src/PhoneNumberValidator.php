@@ -100,6 +100,18 @@ class PhoneNumberValidator extends \yii\validators\Validator
     }
 
     /**
+     * @inheritdoc
+     */
+    public function clientValidateAttribute($model, $attribute, $view)
+    {
+        LibPhoneNumberAsset::register($view);
+
+        return <<<JS
+messages.push("test")
+JS;
+    }
+
+    /**
      * Gets the number prototype.
      *
      * @param      string  $value  phonenumber to get
