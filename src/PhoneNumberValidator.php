@@ -30,6 +30,11 @@ class PhoneNumberValidator extends \yii\validators\Validator
     public $format = PhoneNumberFormat::E164;
 
     /**
+     *
+     */
+    public $invalidFormatMessage;
+
+    /**
      * @var PhoneNumberUtil
      */
     private $_phoneNumberUtil;
@@ -38,6 +43,7 @@ class PhoneNumberValidator extends \yii\validators\Validator
      *
      */
     private $_model;
+
 
     /**
      * @inheritdoc
@@ -54,6 +60,10 @@ class PhoneNumberValidator extends \yii\validators\Validator
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not valid phone number.');
         }
+        if ($this->invalidFormatMessage === null) {
+            $this->invalidFormatMessage = Yii::t('yii', '{attribute} has an invalid format.');
+        }
+
     }
 
     /**
@@ -67,7 +77,7 @@ class PhoneNumberValidator extends \yii\validators\Validator
                 return [$this->message, []];
             }
         } catch (NumberParseException $e) {
-            return [$this->message, []];
+            return [$this->invalidFormatMessage, []];
         }
     }
 
@@ -106,8 +116,32 @@ class PhoneNumberValidator extends \yii\validators\Validator
     {
         LibPhoneNumberAsset::register($view);
 
+        $country = $this->country;
+        if ($this->countryAttribute && $this->_model) {
+            $country = ArrayHelper::getValue($this->_model, $this->countryAttribute);
+        }
+
+        $message = Yii::$app->getI18n()->format($this->message, [
+            'attribute' => $model->getAttributeLabel($attribute),
+        ], Yii::$app->language);
+
+        $invalidFormatMessage = Yii::$app->getI18n()->format($this->invalidFormatMessage, [
+            'attribute' => $model->getAttributeLabel($attribute),
+        ], Yii::$app->language);
+
         return <<<JS
-messages.push("test")
+        if (value) {
+            var phoneNumberUtil = window.libphonenumber.PhoneNumberUtil.getInstance();
+            try {
+                var numberProto = phoneNumberUtil.parse(value,"${country}");
+
+                if (!phoneNumberUtil.isValidNumber(numberProto)){
+                    messages.push("${message}");
+                }
+            } catch (err) {
+                messages.push("${invalidFormatMessage}");
+            }
+        }
 JS;
     }
 
