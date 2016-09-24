@@ -15,22 +15,22 @@ use Yii;
 class PhoneNumberValidator extends \yii\validators\Validator
 {
     /**
-     *
+     * Attribute name or path that points to default region
      */
     public $countryAttribute;
 
     /**
-     *
+     * Validator default region
      */
     public $country;
 
     /**
-     *
+     * the PhoneNumberFormat the phone number should be formatted into or false if no fornatting is required
      */
     public $format = PhoneNumberFormat::E164;
 
     /**
-     *
+     * error message when libphonenumber encoutered an error parsing phone number
      */
     public $invalidFormatMessage;
 
