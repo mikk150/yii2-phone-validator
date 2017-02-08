@@ -44,4 +44,12 @@ class ModelTest extends TestCase
         ]);
         $this->assertTrue($model->validate());
     }
+
+    public function testEmptyPhone()
+    {
+        $model = new NumberModel([
+            'phone' => ''
+        ]);
+        $this->assertTrue($model->validate());
+    }
 }
