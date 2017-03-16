@@ -21,6 +21,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         return $this->phoneNumberUtil->getExampleNumber($regionCode);
     }
 
+    public function getPhonenumberForType($regionCode, $typeCode)
+    {
+        return $this->phoneNumberUtil->getExampleNumberForType($regionCode, $typeCode);
+    }
+
     protected function setUp()
     {
         parent::setUp();

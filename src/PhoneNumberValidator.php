@@ -4,9 +4,11 @@ namespace mikk150\phonevalidator;
 
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberType;
 use libphonenumber\NumberParseException;
 use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 use Yii;
 
 /**
@@ -25,14 +27,24 @@ class PhoneNumberValidator extends \yii\validators\Validator
     public $country;
 
     /**
-     * the PhoneNumberFormat the phone number should be formatted into or false if no fornatting is required
+     * The PhoneNumberFormat the phone number should be formatted into or false if no fornatting is required
      */
     public $format = PhoneNumberFormat::E164;
+
+    /**
+     * Phone number types that are valid
+     */
+    public $acceptedNumberTypes;
 
     /**
      * error message when libphonenumber encoutered an error parsing phone number
      */
     public $invalidFormatMessage;
+
+    /**
+     * error message when phone number is invalid type
+     */
+    public $invalidTypeMessage;
 
     /**
      * @var PhoneNumberUtil
@@ -63,6 +75,9 @@ class PhoneNumberValidator extends \yii\validators\Validator
         if ($this->invalidFormatMessage === null) {
             $this->invalidFormatMessage = Yii::t('yii', '{attribute} has an invalid format.');
         }
+        if ($this->invalidTypeMessage === null) {
+            $this->invalidTypeMessage = Yii::t('yii', '{attribute} is invalid type.');
+        }
 
     }
 
@@ -75,6 +90,9 @@ class PhoneNumberValidator extends \yii\validators\Validator
             $numberProto = $this->getNumberProto($value);
             if (!$this->_phoneNumberUtil->isValidNumber($numberProto)) {
                 return [$this->message, []];
+            }
+            if ($this->acceptedNumberTypes && !in_array($this->_phoneNumberUtil->getNumberType($numberProto), $this->acceptedNumberTypes)) {
+                return [$this->invalidTypeMessage, []];
             }
         } catch (NumberParseException $e) {
             return [$this->invalidFormatMessage, []];
@@ -115,11 +133,16 @@ class PhoneNumberValidator extends \yii\validators\Validator
     public function clientValidateAttribute($model, $attribute, $view)
     {
         LibPhoneNumberAsset::register($view);
-
         $country = $this->country;
         if ($this->countryAttribute && $this->_model) {
             $country = ArrayHelper::getValue($this->_model, $this->countryAttribute);
         }
+
+        $types = false;
+        if ($this->acceptedNumberTypes) {
+            $types = array_map([$this, 'numberTypeMapper'], $this->acceptedNumberTypes);
+        }
+        $types = Json::encode($types);
 
         $message = Yii::$app->getI18n()->format($this->message, [
             'attribute' => $model->getAttributeLabel($attribute),
@@ -129,20 +152,48 @@ class PhoneNumberValidator extends \yii\validators\Validator
             'attribute' => $model->getAttributeLabel($attribute),
         ], Yii::$app->language);
 
-        return <<<JS
+        $invalidTypeMessage = Yii::$app->getI18n()->format($this->invalidTypeMessage, [
+            'attribute' => $model->getAttributeLabel($attribute),
+        ], Yii::$app->language);
+
+        return <<<JAVASCRIPT
         if (value) {
             var phoneNumberUtil = window.libphonenumber.PhoneNumberUtil.getInstance();
+            var types = ${types};
             try {
-                var numberProto = phoneNumberUtil.parse(value,"${country}");
-
+                var numberProto = phoneNumberUtil.parse(value, "${country}");
                 if (!phoneNumberUtil.isValidNumber(numberProto)){
                     messages.push("${message}");
+                }
+                if (types && types.indexOf(phoneNumberUtil.getNumberType(numberProto)) === -1) {
+                    messages.push("${invalidTypeMessage}");
                 }
             } catch (err) {
                 messages.push("${invalidFormatMessage}");
             }
         }
-JS;
+JAVASCRIPT;
+    }
+
+    private function numberTypeMapper($phpNumberType)
+    {
+        $numberMap = [
+            PhoneNumberType::FIXED_LINE => 0,           // FIXED_LINE
+            PhoneNumberType::MOBILE => 1,               // MOBILE
+            PhoneNumberType::FIXED_LINE_OR_MOBILE => 2, // FIXED_LINE_OR_MOBILE
+            PhoneNumberType::TOLL_FREE => 3,            // TOLL_FREE
+            PhoneNumberType::PREMIUM_RATE => 4,         // PREMIUM_RATE
+            PhoneNumberType::SHARED_COST => 5,          // SHARED_COST
+            PhoneNumberType::VOIP => 6,                 // VOIP
+            PhoneNumberType::PERSONAL_NUMBER => 7,      // PERSONAL_NUMBER
+            PhoneNumberType::PAGER => 8,                // PAGER
+            PhoneNumberType::UAN => 9,                  // UAN
+            PhoneNumberType::VOICEMAIL => 10,           // VOICEMAIL
+            PhoneNumberType::UNKNOWN => -1,             // UNKNOWN
+        ];
+        if (isset($numberMap[$phpNumberType])) {
+            return $numberMap[$phpNumberType];
+        }
     }
 
     /**

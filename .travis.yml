@@ -4,4 +4,7 @@ php:
   - '5.6'
   - '7.0'
 before_script:
+  - phantomjs --webdriver=4444 >/dev/null 2>&1 &
   - composer install --prefer-source --no-interaction --dev
+script:
+    - composer exec codecept run

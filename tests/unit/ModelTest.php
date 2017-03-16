@@ -6,6 +6,8 @@ use mikk150\phonevalidator\PhoneNumberValidator;
 use libphonenumber\PhoneNumberFormat;
 use \yiiunit\extensions\phonevalidator\data\models\NumberModel;
 use \yiiunit\extensions\phonevalidator\data\models\CountryNumberModel;
+use yiiunit\extensions\phonevalidator\data\models\NumberTypeModel;
+use libphonenumber\PhoneNumberType;
 
 /**
 *
@@ -32,6 +34,22 @@ class ModelTest extends TestCase
     {
         $model = new NumberModel([
             'phone' => '+00 0000 0000'
+        ]);
+        $this->assertFalse($model->validate());
+    }
+
+    public function testRightNumberType()
+    {
+        $model = new NumberTypeModel([
+            'phone' =>  $this->phoneNumberUtil->format($this->getPhonenumberForType('AR', PhoneNumberType::MOBILE), PhoneNumberFormat::INTERNATIONAL)
+        ]);
+        $this->assertTrue($model->validate());
+    }
+
+    public function testWrongNumberType()
+    {
+        $model = new NumberTypeModel([
+            'phone' =>  $this->phoneNumberUtil->format($this->getPhonenumberForType('AR', PhoneNumberType::FIXED_LINE), PhoneNumberFormat::INTERNATIONAL)
         ]);
         $this->assertFalse($model->validate());
     }
