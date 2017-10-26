@@ -12,13 +12,19 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "bower-asset/google-libphonenumber": "~2.0.0",
-        "giggsey/libphonenumber-for-php": "~8.3.0"
+        "bower-asset/google-libphonenumber": "~3.0|~2.0",
+        "giggsey/libphonenumber-for-php": "~8.3"
     },
     "require-dev": {
         "codeception/codeception": "*",
         "codeception/phpbuiltinserver": "*"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "mikk150\\phonevalidator\\": "src/"
