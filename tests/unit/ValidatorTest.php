@@ -47,4 +47,20 @@ class ValidatorTest extends TestCase
         ]);
         $this->assertFalse($validator->validate('+00 0000 00000'));
     }
+
+    public function testInvalidNumber()
+    {
+        $validator = new PhoneNumberValidator([
+            'country' => 'US'
+        ]);
+        $this->assertFalse($validator->validate('+372 999 999'));
+    }
+
+    public function testNoCountryGiven()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "countryAttribute" or "country" property must be set.');
+
+        $validator = new PhoneNumberValidator();
+    }
 }
