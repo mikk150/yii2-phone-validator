@@ -4,12 +4,13 @@ namespace yiiunit\extensions\phonevalidator;
 
 use libphonenumber\PhoneNumberUtil;
 use yii\helpers\ArrayHelper;
+use Codeception\Test\Unit;
 use Yii;
 
 /**
 *
 */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends Unit
 {
     /**
      * @property \libphonenumber\PhoneNumberUtil

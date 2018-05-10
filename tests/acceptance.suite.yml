@@ -11,3 +11,18 @@ modules:
             browser: phantomjs
             log_js_errors: true
         - \Helper\Acceptance
+
+extensions:
+    enabled:
+        - Codeception\Extension\RunProcess:
+            1: phantomjs --webdriver=0.0.0.0:4444
+            sleep: 3
+        - Codeception\Extension\PhpBuiltinServer:
+            hostname: 0.0.0.0
+            port: 8000
+            documentRoot: tests/_app/web/
+            startDelay: 1
+            autostart: true
+
+coverage:
+    enabled: false
