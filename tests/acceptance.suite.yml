@@ -16,7 +16,7 @@ extensions:
     enabled:
         - Codeception\Extension\RunProcess:
             1: phantomjs --webdriver=0.0.0.0:4444
-            sleep: 3
+            sleep: 5
         - Codeception\Extension\PhpBuiltinServer:
             hostname: 0.0.0.0
             port: 8000
