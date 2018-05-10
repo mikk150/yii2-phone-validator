@@ -16,8 +16,8 @@
         "giggsey/libphonenumber-for-php": "~8.3"
     },
     "require-dev": {
-        "codeception/codeception": "*",
-        "codeception/phpbuiltinserver": "*"
+        "codeception/codeception": "~2.4",
+        "codeception/phpbuiltinserver": "~1.4"
     },
     "repositories": [
         {

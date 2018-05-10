@@ -2,6 +2,7 @@
 
 use libphonenumber\PhoneNumberType;
 use libphonenumber\PhoneNumberFormat;
+use Facebook\WebDriver\WebDriverKeys;
 
 /**
 *
@@ -13,8 +14,9 @@ class NumberValidationCest
         $I->amOnPage('/?r=test/number-model');
 
         $I->fillField('//input[@name="NumberModel[phone]"]', '+000 00000 000000');
-        $I->executeJS('$(\'[name="NumberModel[phone]"]\').change()');
+        $I->pressKey('//input[@name="NumberModel[phone]"]', WebDriverKeys::TAB);
         $I->wait(1);
+
         $I->see('Phone has an invalid format.');
     }
 
@@ -24,10 +26,10 @@ class NumberValidationCest
 
         $phoneNumber = $I->formatPhoneNumber($I->getPhonenumberForType('US', PhoneNumberType::MOBILE), PhoneNumberFormat::NATIONAL);
 
-
         $I->fillField('//input[@name="NumberModel[phone]"]', $phoneNumber);
-        $I->executeJS('$(\'[name="NumberModel[phone]"]\').change()');
+        $I->pressKey('//input[@name="NumberModel[phone]"]', WebDriverKeys::TAB);
         $I->wait(1);
+    
         $I->dontSeeElement('.has-error');
     }
 }
