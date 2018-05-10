@@ -7,7 +7,7 @@ class_name: TestGuy
 modules:
     enabled:
         - WebDriver:
-            url: 'http://localhost:8080/'
+            url: 'http://localhost:8000/'
             browser: phantomjs
             log_js_errors: true
         - \Helper\Acceptance
@@ -19,7 +19,10 @@ extensions:
             sleep: 3
         - Codeception\Extension\PhpBuiltinServer:
             hostname: 0.0.0.0
-            port: 8080
+            port: 8000
             documentRoot: tests/_app/web/
             startDelay: 1
             autostart: true
+
+coverage:
+    enabled: false

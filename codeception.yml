@@ -9,3 +9,9 @@ settings:
     bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
+coverage:
+    enabled: true
+    include:
+        - src/*.php
+    exclude:
+        - tests/*
