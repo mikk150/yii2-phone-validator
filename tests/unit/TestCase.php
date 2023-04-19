@@ -2,10 +2,10 @@
 
 namespace yiiunit\extensions\phonevalidator;
 
-use libphonenumber\PhoneNumberUtil;
-use yii\helpers\ArrayHelper;
 use Codeception\Test\Unit;
+use libphonenumber\PhoneNumberUtil;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
 *
@@ -27,14 +27,14 @@ abstract class TestCase extends Unit
         return $this->phoneNumberUtil->getExampleNumberForType($regionCode, $typeCode);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->phoneNumberUtil = PhoneNumberUtil::getInstance();
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->destroyApplication();
     }
