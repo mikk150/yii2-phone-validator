@@ -1,0 +1,34 @@
+version: '3'
+services:
+  php:
+    user: ${UID}
+    image: gitlab.credy.eu:5001/docker/php:7.2-cli-pcov
+    volumes:
+      - ./:/var/www/html
+      - ${COMPOSER_HOME}:/.config/composer
+    env_file:
+      - .env
+  selenium:
+    image: selenium/hub:4
+    ports:
+      - 4444:4444
+  chrome-node:
+    image: selenium/node-chrome
+    ports:
+      - 5900:5900
+    shm_size: 2gb
+    environment:
+      - SE_EVENT_BUS_HOST=selenium
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - VNC_NO_PASSWORD=1
+  firefox-node:
+    image: selenium/node-firefox
+    ports:
+      - 5900
+    shm_size: 2gb
+    environment:
+      - SE_EVENT_BUS_HOST=selenium
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - VNC_NO_PASSWORD=1

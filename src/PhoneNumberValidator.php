@@ -90,7 +90,7 @@ class PhoneNumberValidator extends \yii\validators\Validator
             return null;
         }
 
-        if (!is_string($value) || !is_numeric($value)) {
+        if (!is_string($value) && !is_numeric($value)) {
             return [$this->message, []];
         }
 

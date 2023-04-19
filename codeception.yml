@@ -16,3 +16,6 @@ coverage:
         - src/*.php
     exclude:
         - tests/*
+
+params:
+    - env
