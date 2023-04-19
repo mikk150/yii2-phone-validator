@@ -2,14 +2,14 @@
 
 namespace mikk150\phonevalidator;
 
-use libphonenumber\PhoneNumberUtil;
+use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberType;
-use libphonenumber\NumberParseException;
-use yii\helpers\ArrayHelper;
-use yii\base\InvalidConfigException;
-use yii\helpers\Json;
+use libphonenumber\PhoneNumberUtil;
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 /**
 *
@@ -86,6 +86,14 @@ class PhoneNumberValidator extends \yii\validators\Validator
      */
     protected function validateValue($value)
     {
+        if ($this->isEmpty($value) && $this->skipOnEmpty) {
+            return null;
+        }
+
+        if (!is_string($value) && !is_numeric($value)) {
+            return [$this->message, []];
+        }
+
         try {
             $numberProto = $this->getNumberProto($value);
             if (!$this->_phoneNumberUtil->isValidNumber($numberProto)) {
@@ -159,17 +167,17 @@ class PhoneNumberValidator extends \yii\validators\Validator
         return <<<JAVASCRIPT
         if (value) {
             var phoneNumberUtil = window.libphonenumber.PhoneNumberUtil.getInstance();
-            var types = ${types};
+            var types = {$types};
             try {
-                var numberProto = phoneNumberUtil.parse(value, "${country}");
+                var numberProto = phoneNumberUtil.parse(value, "{$country}");
                 if (!phoneNumberUtil.isValidNumber(numberProto)){
-                    messages.push("${message}");
+                    messages.push("{$message}");
                 }
                 if (types && types.indexOf(phoneNumberUtil.getNumberType(numberProto)) === -1) {
-                    messages.push("${invalidTypeMessage}");
+                    messages.push("{$invalidTypeMessage}");
                 }
             } catch (err) {
-                messages.push("${invalidFormatMessage}");
+                messages.push("{$invalidFormatMessage}");
             }
         }
 JAVASCRIPT;

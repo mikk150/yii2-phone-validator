@@ -1,0 +1,47 @@
+test:
+  image: $PHP_IMAGE
+  services:
+    - name: selenium/hub:4
+      alias: selenium
+    - name: selenium/node-chrome
+      variables:
+        SE_EVENT_BUS_HOST: selenium
+        SE_EVENT_BUS_PUBLISH_PORT: "4442"
+        SE_EVENT_BUS_SUBSCRIBE_PORT: "4443"
+    - name: selenium/node-firefox
+      variables:
+        SE_EVENT_BUS_HOST: selenium
+        SE_EVENT_BUS_PUBLISH_PORT: "4442"
+        SE_EVENT_BUS_SUBSCRIBE_PORT: "4443"
+
+  before_script:
+    - composer install --prefer-dist
+    - export BUILD_HOST=$(getent hosts $HOSTNAME | awk '{ print $1 }')
+  script:
+    - vendor/bin/codecept run $CODECEPT_FLAGS
+  parallel:
+    matrix:
+      - PHP: 5.6
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:5.6-apache-dev
+        CODECEPT_FLAGS: ''
+      - PHP: 7.1
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:7.1-cli-pcov
+        CODECEPT_FLAGS: ''
+      - PHP: 7.2
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:7.2-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
+      - PHP: 7.3
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:7.3-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
+      - PHP: 7.4
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:7.4-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
+      - PHP: 8.0
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:8.0-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
+      - PHP: 8.1
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:8.1-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
+      - PHP: 8.2
+        PHP_IMAGE: gitlab.credy.eu:5001/docker/php:8.2-cli-pcov
+        CODECEPT_FLAGS: --coverage --coverage-xml=coverage.xml
