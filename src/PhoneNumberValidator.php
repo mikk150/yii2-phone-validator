@@ -86,6 +86,14 @@ class PhoneNumberValidator extends \yii\validators\Validator
      */
     protected function validateValue($value)
     {
+        if ($this->isEmpty($value) && $this->skipOnEmpty) {
+            return null;
+        }
+
+        if (!is_string($value) || !is_numeric($value)) {
+            return [$this->message, []];
+        }
+
         try {
             $numberProto = $this->getNumberProto($value);
             if (!$this->_phoneNumberUtil->isValidNumber($numberProto)) {
