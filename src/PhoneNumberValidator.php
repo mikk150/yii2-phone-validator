@@ -66,9 +66,6 @@ class PhoneNumberValidator extends \yii\validators\Validator
 
         $this->_phoneNumberUtil = PhoneNumberUtil::getInstance();
 
-        if (!$this->countryAttribute && !$this->country) {
-            throw new InvalidConfigException('The "countryAttribute" or "country" property must be set.');
-        }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not valid phone number.');
         }

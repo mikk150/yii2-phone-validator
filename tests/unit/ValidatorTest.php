@@ -2,9 +2,9 @@
 
 namespace yiiunit\extensions\phonevalidator;
 
-use mikk150\phonevalidator\PhoneNumberValidator;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberType;
+use mikk150\phonevalidator\PhoneNumberValidator;
 
 /**
 *
@@ -54,13 +54,5 @@ class ValidatorTest extends TestCase
             'country' => 'US'
         ]);
         $this->assertFalse($validator->validate('+372 999 999'));
-    }
-
-    public function testNoCountryGiven()
-    {
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('The "countryAttribute" or "country" property must be set.');
-
-        $validator = new PhoneNumberValidator();
     }
 }

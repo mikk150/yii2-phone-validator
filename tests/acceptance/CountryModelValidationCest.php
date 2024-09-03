@@ -1,8 +1,8 @@
 <?php
 
-use libphonenumber\PhoneNumberType;
-use libphonenumber\PhoneNumberFormat;
 use Facebook\WebDriver\WebDriverKeys;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberType;
 
 /**
 *

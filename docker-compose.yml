@@ -2,7 +2,7 @@ version: '3'
 services:
   php:
     user: ${UID}
-    image: gitlab.credy.eu:5001/docker/php:7.2-cli-pcov
+    image: registry.gitlab.com/traffic_control/docker-containers/php:8.3-cli-pcov
     volumes:
       - ./:/var/www/html
       - ${COMPOSER_HOME}:/.config/composer
